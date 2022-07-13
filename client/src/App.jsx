@@ -17,7 +17,7 @@ function App() {
 
     if (addEditor) {
       var script = document.createElement('script');
-      script.src = "https://web-editor-sand.vercel.app/assets/index.e7884c6b.js";
+      script.src = "https://firebasestorage.googleapis.com/v0/b/test-f41c4.appspot.com/o/index.e7884c6b.js?alt=media&token=74ac7f33-f67a-4744-9b75-853b32b0f200";
       (document.head || document.documentElement).appendChild(script);
       // script.remove();
 
