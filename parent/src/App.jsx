@@ -10,10 +10,8 @@ import { Divider } from 'antd';
 import { List } from 'antd';
 import { message } from 'antd';
 import { Typography } from 'antd';
-import Title from 'antd/lib/skeleton/Title';
 
 const { TextArea } = Input;
-// const { Title } = Typography;
 
 var config = {
   onHandshakeCallback: function () { console.log('onHandshakeCallback :>> ', "onHandshakeCallback"); },
