@@ -47,7 +47,11 @@ function App() {
   let id = useRef();
 
   function openClient() {
-    id.current = parent.openNewTab({ url: url || 'http://localhost:3000/', windowName: 'client' });
+
+    var clientUrl = new URL(url);
+    clientUrl.searchParams.append('moe-editor', true);
+    setClientMessages([])
+    id.current = parent.openNewTab({ url: clientUrl || 'http://localhost:3000/', windowName: 'client' });
     setTabId(id)
   }
 
