@@ -3,18 +3,15 @@ import './App.css'
 import AcrossTabs from "across-tabs"
 import { useRef } from 'react';
 import { useEffect } from 'react';
+import { useCallback } from 'react';
 
 var config = {
   onHandshakeCallback: function () { console.log('onHandshakeCallback :>> ', "onHandshakeCallback"); },
   // onPollingCallback: function () { console.log("onPollingCallback"); },
   onReady: function () { console.log("onReady"); },
-  onChildCommunication: function (data) {
-    console.log("onChildCommunication");
-    alert(data)
-  },
 }
 
-var parent = new AcrossTabs.Parent(config);
+// var parent = new AcrossTabs.Parent(config);
 
 
 function App() {
@@ -22,6 +19,20 @@ function App() {
   const [url, setUrl] = useState("");
   const [message, setMessage] = useState("");
   const [tabId, setTabId] = useState("");
+  const [clientMessages, setClientMessages] = useState([]);
+
+  const onChildCommunication = useCallback(function (data) {
+    console.log("onChildCommunication");
+    console.log('data :>> ', data);
+    setClientMessages(m => [...m, data])
+  }, [])
+
+  config.onChildCommunication = onChildCommunication
+
+  const [parent, setParent] = useState(() => new AcrossTabs.Parent(config));
+
+  // const parent = useRef(new AcrossTabs.Parent(config));
+  // const parent = parentRef.current
 
   let id = useRef();
 
@@ -32,9 +43,9 @@ function App() {
 
 
   function sendMessageToClient() {
+    console.log(' parent.getAllTabs() :>> ', parent.getAllTabs());
     console.log('tabId :>> ', tabId);
     parent.broadCastTo(tabId.current.id, message);
-    console.log(' parent.getAllTabs() :>> ', parent.getAllTabs());
   }
 
 
@@ -68,6 +79,8 @@ function App() {
       <button onClick={sendMessageToClient}>Send Message To Client</button>
 
       <br />
+
+      {JSON.stringify(clientMessages)}
     </div>
   )
 }
