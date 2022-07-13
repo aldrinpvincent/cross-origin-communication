@@ -2,6 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import AcrossTabs from "across-tabs"
 import { useRef } from 'react';
+import { useEffect } from 'react';
 
 var config = {
   onHandshakeCallback: function () { console.log('onHandshakeCallback :>> ', "onHandshakeCallback"); },
@@ -32,9 +33,25 @@ function App() {
 
   function sendMessageToClient() {
     console.log('tabId :>> ', tabId);
-    parent.broadCastTo(tabId.current.id, 'Yo! Message from parent!!');
+    parent.broadCastTo(tabId.current.id, message);
     console.log(' parent.getAllTabs() :>> ', parent.getAllTabs());
   }
+
+
+  useEffect(() => {
+
+    const queryString = window.location.search;
+    // console.log(queryString);
+    const urlParams = new URLSearchParams(queryString);
+    const addEditor = urlParams.get("moe-editor")
+
+    if (addEditor) {
+      const script = document.createElement('script');
+      script.src = "http://localhost:3000/test.js";
+      (document.head || document.documentElement).appendChild(script);
+    }
+
+  }, []);
 
 
   return (
