@@ -4,6 +4,16 @@ import AcrossTabs from "across-tabs"
 import { useRef } from 'react';
 import { useEffect } from 'react';
 import { useCallback } from 'react';
+import { Input } from 'antd';
+import { Button } from 'antd';
+import { Divider } from 'antd';
+import { List } from 'antd';
+import { message } from 'antd';
+import { Typography } from 'antd';
+import Title from 'antd/lib/skeleton/Title';
+
+const { TextArea } = Input;
+// const { Title } = Typography;
 
 var config = {
   onHandshakeCallback: function () { console.log('onHandshakeCallback :>> ', "onHandshakeCallback"); },
@@ -17,13 +27,14 @@ var config = {
 function App() {
 
   const [url, setUrl] = useState("");
-  const [message, setMessage] = useState("");
+  const [messageData, setMessage] = useState("");
   const [tabId, setTabId] = useState("");
   const [clientMessages, setClientMessages] = useState([]);
 
   const onChildCommunication = useCallback(function (data) {
     console.log("onChildCommunication");
     console.log('data :>> ', data);
+    message.info(data);
     setClientMessages(m => [...m, data])
   }, [])
 
@@ -31,8 +42,7 @@ function App() {
 
   const [parent, setParent] = useState(() => new AcrossTabs.Parent(config));
 
-  // const parent = useRef(new AcrossTabs.Parent(config));
-  // const parent = parentRef.current
+
 
   let id = useRef();
 
@@ -45,7 +55,7 @@ function App() {
   function sendMessageToClient() {
     console.log(' parent.getAllTabs() :>> ', parent.getAllTabs());
     console.log('tabId :>> ', tabId);
-    parent.broadCastTo(tabId.current.id, message);
+    parent.broadCastTo(tabId.current.id, messageData);
   }
 
 
@@ -67,20 +77,41 @@ function App() {
 
   return (
     <div className="App">
-      <input value={url} onChange={e => setUrl(e.target.value)} />
 
-      <button onClick={openClient}>Open Client site</button>
+
+      <Typography.Title>Parent web application</Typography.Title>
+
+      <Input value={url} onChange={e => setUrl(e.target.value)} placeholder="Enter client url" />
+      <br />
+      <br />
+      <Button type="primary" onClick={openClient}>Open Client site</Button>
 
       <br />
       <br />
-      <textarea value={message} onChange={e => setMessage(e.target.value)} />
+      <TextArea value={messageData} onChange={e => setMessage(e.target.value)} />
+      <br />
+      <br />
+      <Button type="primary" onClick={sendMessageToClient}>Send Message To Client</Button>
 
       <br />
-      <button onClick={sendMessageToClient}>Send Message To Client</button>
-
       <br />
+      <Divider orientation="left">Messages from client</Divider>
+      <div style={{ "background": "#fff" }}>
 
-      {JSON.stringify(clientMessages)}
+
+
+        <List
+          bordered
+          dataSource={clientMessages}
+          renderItem={item => (
+            <List.Item>
+              <Typography.Text mark>[{url}]</Typography.Text> {item}
+            </List.Item>
+          )}
+        />
+
+      </div>
+
     </div>
   )
 }
